@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import Chats from "./Routes/Chats";
 import ServerBar from "./Routes/ServerBar";
 import UserBar from "./Routes/UserBar";
+import { theme } from "./theme";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,6 +23,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#555",
+    backgroundColor: theme.darkBackgroundColor,
   },
 });
