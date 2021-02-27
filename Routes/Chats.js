@@ -57,18 +57,19 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
       }
       if (snapToUserBar) {
         isGestureActive.value = false;
-        translation.x.value = withSpring(-1 * (width - 50), { damping: 15 });
+        translation.x.value = withSpring(-1 * (width - 50), { damping: 13 });
         offsetX.value = -1 * (width - 50);
         runOnJS(setCurrentSlide)(2);
       } else if (snapToServerBar) {
         isGestureActive.value = false;
-        translation.x.value = withSpring(width - 50, { damping: 15 });
+        translation.x.value = withSpring(width - 50, { damping: 13 });
         offsetX.value = width - 50;
         runOnJS(setCurrentSlide)(0);
       } else {
         isGestureActive.value = false;
-        translation.x.value = withSpring(0, { damping: 15 });
+        translation.x.value = withSpring(0, { damping: 13 });
         offsetX.value = 0;
+        runOnJS(setCurrentSlide)(1);
       }
     },
   });
@@ -80,12 +81,12 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
   });
 
   const gotouserbar = () => {
-    translation.x.value = withSpring(-1 * (width - 50), { damping: 15 });
+    translation.x.value = withSpring(-1 * (width - 50), { damping: 13 });
     offsetX.value = -1 * (width - 50);
     setCurrentSlide(2);
   };
   const gotoserverbar = () => {
-    translation.x.value = withSpring(width - 50, { damping: 15 });
+    translation.x.value = withSpring(width - 50, { damping: 13 });
     offsetX.value = width - 50;
     setCurrentSlide(0);
   };
@@ -139,11 +140,13 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
                       isFirstMsgByUser ? styles.chatLeft : styles.chatLeftDummy
                     }
                   >
-                    {isFirstMsgByUser && (
+                    {isFirstMsgByUser ? (
                       <Image
                         source={{ uri: chat.avatar_url }}
                         style={styles.chatAvatar}
                       />
+                    ) : (
+                      <Text style={styles.chatOtherTime}>12:30</Text>
                     )}
                   </View>
                   <View style={styles.chatRight}>
@@ -351,6 +354,9 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 50,
     resizeMode: "contain",
+  },
+  chatOtherTime: {
+    color: theme.otherTextColor,
   },
   chatRight: {
     flexDirection: "column",
