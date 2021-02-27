@@ -6,4 +6,8 @@ export const theme = {
   darkBackgroundColor: "#212226",
   darkerBackgroundColor: "#18191d",
   unreadBackgroundColor: "#7289d9",
+  iconColor: "#e1e1e1",
+  usernameColor: "#ff2427",
+  messageColor: "#e1e1e1",
+  otherTextColor: "#818181",
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,7 @@ import {
   Dimensions,
   TextInput,
   Pressable,
+  Image,
 } from "react-native";
 import { PanGestureHandler, ScrollView } from "react-native-gesture-handler";
 import Animated, {
@@ -21,13 +22,15 @@ import Animated, {
 import { useVector } from "react-native-redash";
 import { Feather, Entypo } from "@expo/vector-icons";
 import { theme } from "../theme";
-
-var array = new Array(50).fill(0);
+import { chats } from "../temp";
 
 const { width, height } = Dimensions.get("window");
 
 const Chats = ({ currentSlide, setCurrentSlide }) => {
   const [crntMessage, setCrntMessage] = useState("");
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+
+  const chatScrollCont = useRef(null);
 
   const isGestureActive = useSharedValue(false);
   const offsetX = useSharedValue(0);
@@ -86,13 +89,23 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
     offsetX.value = width - 50;
     setCurrentSlide(0);
   };
+  const checkEnd = (nativeEvent) => {
+    let diff =
+      nativeEvent.contentSize.height -
+      (nativeEvent.contentOffset.y + nativeEvent.layoutMeasurement.height);
+    if (diff < 65) {
+      setShowScrollToBottom(false);
+    } else {
+      setShowScrollToBottom(true);
+    }
+  };
 
   return (
     <PanGestureHandler onGestureEvent={onGestureEvent}>
       <Animated.View style={[style, styles.chats]}>
         <View style={styles.topBarCont}>
           <Pressable style={styles.hamburgerMenu} onPress={gotoserverbar}>
-            <Feather name="menu" size={24} color="#e1e1e1" />
+            <Feather name="menu" size={24} color={theme.iconColor} />
           </Pressable>
           <View style={styles.channelName}>
             <Text style={{ ...styles.barText, color: "grey" }}>
@@ -100,29 +113,81 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
             </Text>
           </View>
           <View style={styles.searchIcon}>
-            <Feather name="search" size={24} color="#e1e1e1" />
+            <Feather name="search" size={24} color={theme.iconColor} />
           </View>
           <Pressable style={styles.userMenu} onPress={gotouserbar}>
-            <Entypo name="users" size={24} color="#e1e1e1" />
+            <Entypo name="users" size={24} color={theme.iconColor} />
           </Pressable>
         </View>
-        <ScrollView>
-          {/* Hied the sidebar(Optional) */}
+        <ScrollView
+          ref={chatScrollCont}
+          style={styles.chatScrollCont}
+          onScroll={(event) => checkEnd(event.nativeEvent)}
+        >
           <View style={styles.chatCont}>
             {/* Have a padding of 10 here */}
-            {array.map((_, i) => (
-              <Text key={i} style={{ color: theme.fontColor }}>
-                {"This is " + i}
-              </Text>
-            ))}
+            {chats.map((chat, index) => {
+              let isFirstMsgByUser =
+                index !== 0 && chat.username !== chats[index - 1].username;
+              if (index === 0) {
+                isFirstMsgByUser = true;
+              }
+              return (
+                <Pressable key={index} style={styles.chat}>
+                  <View
+                    style={
+                      isFirstMsgByUser ? styles.chatLeft : styles.chatLeftDummy
+                    }
+                  >
+                    {isFirstMsgByUser && (
+                      <Image
+                        source={{ uri: chat.avatar_url }}
+                        style={styles.chatAvatar}
+                      />
+                    )}
+                  </View>
+                  <View style={styles.chatRight}>
+                    {isFirstMsgByUser && (
+                      <View style={styles.chatRightHead}>
+                        <Text style={styles.chatRightUsername}>
+                          {chat.username}
+                        </Text>
+                        <Text style={styles.chatRightTimestamp}>
+                          Today at 10:30(TODO)
+                        </Text>
+                      </View>
+                    )}
+                    <View style={styles.chatMessageCont}>
+                      <Text style={styles.chatMessage}>
+                        {chat.message}
+                        {chat.edited && (
+                          <Text style={styles.chatEdited}>(edited)</Text>
+                        )}
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
+              );
+            })}
           </View>
         </ScrollView>
+        {showScrollToBottom && (
+          <Pressable
+            onPress={() =>
+              chatScrollCont?.current?.scrollToEnd({ duration: 2000 })
+            }
+            style={styles.scrollToBottom}
+          >
+            <Entypo name="chevron-down" size={24} color={theme.iconColor} />
+          </Pressable>
+        )}
+
         <View style={styles.sendCont}>
           <View style={styles.imageSelector}>
-            <Feather name="image" size={24} color="#e1e1e1" />
+            <Feather name="image" size={24} color={theme.iconColor} />
           </View>
           <View style={styles.giftSelector}>
-            <Feather name="gift" size={24} color="#e1e1e1" />
+            <Feather name="gift" size={24} color={theme.iconColor} />
           </View>
           <View style={styles.sendAreaCont}>
             <TextInput
@@ -133,7 +198,7 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
               placeholderTextColor="grey"
             />
             <View style={styles.emojiSelctor}>
-              <Entypo name="emoji-flirt" size={24} color="#e1e1e1" />
+              <Entypo name="emoji-flirt" size={24} color={theme.iconColor} />
             </View>
           </View>
         </View>
@@ -154,15 +219,15 @@ const styles = StyleSheet.create({
     borderColor: theme.darkBackgroundColor,
     borderWidth: 3,
     flexDirection: "column",
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
+    // borderTopRightRadius: 10,
+    // borderTopLeftRadius: 10,
   },
   topBarCont: {
     width: "100%",
     height: 60,
     backgroundColor: theme.barBackgroundColor,
-    borderTopRightRadius: 10,
-    borderTopLeftRadius: 10,
+    // borderTopRightRadius: 10,
+    // borderTopLeftRadius: 10,
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
@@ -250,8 +315,71 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 15,
   },
+  chatScrollCont: {
+    marginBottom: 60,
+  },
   chatCont: {
     padding: 10,
-    marginBottom: 60,
+  },
+  scrollToBottom: {
+    position: "absolute",
+    right: 10,
+    bottom: 70,
+    padding: 10,
+    zIndex: 10,
+    borderRadius: 60,
+    backgroundColor: theme.darkBackgroundColor,
+  },
+  chat: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  chatLeft: {
+    width: 40,
+    height: 40,
+    marginLeft: 5,
+    marginRight: 15,
+  },
+  chatLeftDummy: {
+    width: 40,
+    height: 40,
+    marginLeft: 5,
+    marginRight: 15,
+  },
+  chatAvatar: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 50,
+    resizeMode: "contain",
+  },
+  chatRight: {
+    flexDirection: "column",
+    paddingRight: 15,
+    width: "90%",
+  },
+  chatRightHead: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  chatRightUsername: {
+    fontSize: 16,
+    color: theme.usernameColor,
+    marginRight: 5,
+  },
+  chatRightTimestamp: {
+    fontSize: 12,
+    color: theme.otherTextColor,
+  },
+  chatMessageCont: {
+    width: "90%",
+  },
+  chatMessage: {
+    color: theme.messageColor,
+    fontSize: 14,
+    textAlign: "justify",
+  },
+  chatEdited: {
+    color: theme.otherTextColor,
+    fontSize: 11,
   },
 });
