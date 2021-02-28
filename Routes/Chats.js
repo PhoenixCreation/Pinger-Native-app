@@ -36,7 +36,14 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
   const offsetX = useSharedValue(0);
   const translation = useVector();
   const onGestureEvent = useAnimatedGestureHandler({
-    onStart: () => (isGestureActive.value = true),
+    onStart: ({ translationX }) => {
+      isGestureActive.value = true;
+      if (translationX + offsetX.value < 0) {
+        runOnJS(setCurrentSlide)(2);
+      } else {
+        runOnJS(setCurrentSlide)(0);
+      }
+    },
     onActive: ({ translationX, translationY }) => {
       translation.x.value = translationX + offsetX.value;
       if (translationX + offsetX.value < 0) {
@@ -56,20 +63,20 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
         snapToUserBar = point < 0 ? true : false;
       }
       if (snapToUserBar) {
+        runOnJS(setCurrentSlide)(2);
         isGestureActive.value = false;
         translation.x.value = withSpring(-1 * (width - 50), { damping: 13 });
         offsetX.value = -1 * (width - 50);
-        runOnJS(setCurrentSlide)(2);
       } else if (snapToServerBar) {
+        runOnJS(setCurrentSlide)(0);
         isGestureActive.value = false;
         translation.x.value = withSpring(width - 50, { damping: 13 });
         offsetX.value = width - 50;
-        runOnJS(setCurrentSlide)(0);
       } else {
+        runOnJS(setCurrentSlide)(1);
         isGestureActive.value = false;
         translation.x.value = withSpring(0, { damping: 13 });
         offsetX.value = 0;
-        runOnJS(setCurrentSlide)(1);
       }
     },
   });
@@ -81,14 +88,14 @@ const Chats = ({ currentSlide, setCurrentSlide }) => {
   });
 
   const gotouserbar = () => {
+    setCurrentSlide(2);
     translation.x.value = withSpring(-1 * (width - 50), { damping: 13 });
     offsetX.value = -1 * (width - 50);
-    setCurrentSlide(2);
   };
   const gotoserverbar = () => {
+    setCurrentSlide(0);
     translation.x.value = withSpring(width - 50, { damping: 13 });
     offsetX.value = width - 50;
-    setCurrentSlide(0);
   };
   const checkEnd = (nativeEvent) => {
     let diff =
