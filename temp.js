@@ -505,6 +505,96 @@ export const servers = [
           channel_name: "general",
           unread: true,
         },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general 1",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general 2",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general 3",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general 4",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general 5",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
+        {
+          channel_id:
+            "Tue Mar 02 2021 19:19:23 GMT+0530 (India Standard Time) 0--general",
+          channel_name: "general",
+          unread: true,
+        },
       ],
       voice: [
         {

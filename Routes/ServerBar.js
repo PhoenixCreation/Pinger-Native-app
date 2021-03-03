@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
   View,
   Dimensions,
-  ScrollView,
   Image,
   Pressable,
+  ScrollView,
 } from "react-native";
+import {
+  ScrollView as GestureScrollView,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { theme } from "../theme";
 import { servers } from "../temp";
@@ -16,6 +20,13 @@ const { width, height } = Dimensions.get("window");
 
 const ServerBar = ({ currentSlide }) => {
   const [currentServer, setCurrentServer] = useState(servers[0]);
+  const [currentChannel, setCurrentChannel] = useState(
+    currentServer.channels.text[0]
+  );
+
+  useEffect(() => {
+    setCurrentChannel(currentServer.channels.text[0]);
+  }, [currentServer]);
 
   const opacity = currentSlide === 0 ? 1 : 0;
   return (
@@ -45,7 +56,10 @@ const ServerBar = ({ currentSlide }) => {
         <View style={styles.serverName}>
           <Text style={styles.serverNameText}>{currentServer.server_name}</Text>
         </View>
-        <ScrollView contentContainerStyle={styles.channelScroll}>
+        <GestureScrollView
+          contentContainerStyle={styles.channelScroll}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.serverPoster}>
             <Image
               source={{
@@ -67,11 +81,34 @@ const ServerBar = ({ currentSlide }) => {
               <Text style={styles.textLabelText}>Text Channels</Text>
             </View>
             {currentServer.channels.text.map((channel, index) => {
+              const isCurrent = currentChannel === channel;
               return (
-                <Pressable style={styles.channel} key={index}>
+                <TouchableWithoutFeedback
+                  style={
+                    isCurrent
+                      ? { ...styles.channel, ...styles.currentChannel }
+                      : styles.channel
+                  }
+                  key={index}
+                  onPress={() => {
+                    console.log("clicked");
+                    setCurrentChannel(channel);
+                  }}
+                >
                   <Feather name="hash" size={14} color="white" />
-                  <Text style={styles.channelName}>{channel.channel_name}</Text>
-                </Pressable>
+                  <Text
+                    style={
+                      isCurrent
+                        ? {
+                            ...styles.channelName,
+                            ...styles.currentChannelName,
+                          }
+                        : styles.channelName
+                    }
+                  >
+                    {channel.channel_name}
+                  </Text>
+                </TouchableWithoutFeedback>
               );
             })}
           </View>
@@ -88,14 +125,18 @@ const ServerBar = ({ currentSlide }) => {
             </View>
             {currentServer.channels.voice.map((channel, index) => {
               return (
-                <Pressable style={styles.channel} key={index}>
+                <Pressable
+                  style={styles.channel}
+                  key={index}
+                  onPress={() => setCurrentChannel(channel)}
+                >
                   <Feather name="hash" size={14} color="white" />
                   <Text style={styles.channelName}>{channel.channel_name}</Text>
                 </Pressable>
               );
             })}
           </View>
-        </ScrollView>
+        </GestureScrollView>
       </View>
     </View>
   );
@@ -112,12 +153,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     position: "relative",
-    marginBottom: 50,
+    marginBottom: 5,
     justifyContent: "space-between",
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
     overflow: "hidden",
     marginTop: 5,
+    borderWidth: 2,
+    borderColor: theme.backgroundColor,
   },
   serverIconCont: {
     width: 75,
@@ -178,6 +221,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 5,
   },
+  // channelScroll: {
+  //   borderWidth: 1,
+  //   borderColor: "red",
+  //   zIndex: 1000,
+  // },
   textLabel: {
     flexDirection: "row",
     alignItems: "center",
@@ -212,5 +260,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: theme.fontColor + "aa",
     paddingLeft: 5,
+  },
+  currentChannel: {
+    height: "auto",
+  },
+  currentChannelName: {
+    color: theme.fontColor,
   },
 });
